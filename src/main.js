@@ -18,15 +18,23 @@ class NetworkReceiptPrinter extends ReceiptPrinterDriver {
 
         this.#options = {
 			host:		options.host || 'localhost',
-			port:		options.port || 9100
+			port:		options.port || 9100,
+			timeout:	options.timeout || 2500,
         }
 	}
 
 	async connect() {
+		this.#client.setTimeout(this.#options.timeout);
+
 		this.#client.connect(this.#options.port, this.#options.host, () => {
 			this.#emitter.emit('connected', {
 				type: 'network'
 			});
+		});
+
+		this.#client.on('timeout', () => {
+			this.#client.destroy();
+			this.#emitter.emit('timeout');
 		});
 
 		this.#client.on('close', () => {
