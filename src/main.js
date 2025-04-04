@@ -44,7 +44,6 @@ class NetworkReceiptPrinter extends ReceiptPrinterDriver {
 
 	async disconnect() {
 		this.#client.destroy();
-		this.#emitter.emit('disconnected');
 	}
 	
 	async print(command) {
