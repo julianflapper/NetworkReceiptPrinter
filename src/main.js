@@ -48,7 +48,20 @@ class NetworkReceiptPrinter extends ReceiptPrinterDriver {
 	}
 	
 	async print(command) {
-		this.#client.write(command);
+		let CHUNK_SIZE = 1024;
+		let offset = 0;
+		let i = 0;
+
+		while (offset < command.length) {
+			const chunk = command.slice(offset, offset + CHUNK_SIZE);
+			
+			await new Promise(resolve => {
+				this.#client.write(chunk, null, resolve);
+			})
+			
+			offset += CHUNK_SIZE;
+			i++;
+		}
 	}
 
 	addEventListener(n, f) {
