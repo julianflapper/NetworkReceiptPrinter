@@ -37,6 +37,11 @@ class NetworkReceiptPrinter extends ReceiptPrinterDriver {
 			this.#emitter.emit('timeout');
 		});
 
+		this.#client.on('error', (e) => {
+			this.#client.destroy();
+			this.#emitter.emit('error', e);
+		});
+
 		this.#client.on('close', () => {
 			this.#emitter.emit('disconnected');
 		});
